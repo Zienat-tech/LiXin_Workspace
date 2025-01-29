@@ -1,0 +1,2 @@
+../Drivers/Hardware_Driver/Led.c:3:16:led_init	1
+../Drivers/Hardware_Driver/Led.c:9:6:led_task_runnable	6

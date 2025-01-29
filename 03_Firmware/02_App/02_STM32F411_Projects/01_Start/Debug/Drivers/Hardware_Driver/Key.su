@@ -1,0 +1,3 @@
+../Drivers/Hardware_Driver/Key.c:5:16:key_init	4	static
+../Drivers/Hardware_Driver/Key.c:11:16:key_get_state	16	static
+../Drivers/Hardware_Driver/Key.c:26:6:key_task_runnable	16	static
