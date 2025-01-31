@@ -56,6 +56,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 STM32F411CEU6_Project_FreeRTOS.list \
 
+OBJCOPY_HEX += \
+STM32F411CEU6_Project_FreeRTOS.hex \
+
 
 # All Target
 all: main-build
@@ -79,12 +82,17 @@ STM32F411CEU6_Project_FreeRTOS.list: $(EXECUTABLES) makefile objects.list $(OPTI
 	@echo 'Finished building: $@'
 	@echo ' '
 
+STM32F411CEU6_Project_FreeRTOS.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "STM32F411CEU6_Project_FreeRTOS.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) STM32F411CEU6_Project_FreeRTOS.elf STM32F411CEU6_Project_FreeRTOS.list STM32F411CEU6_Project_FreeRTOS.map default.size.stdout
+	-$(RM) STM32F411CEU6_Project_FreeRTOS.elf STM32F411CEU6_Project_FreeRTOS.hex STM32F411CEU6_Project_FreeRTOS.list STM32F411CEU6_Project_FreeRTOS.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
