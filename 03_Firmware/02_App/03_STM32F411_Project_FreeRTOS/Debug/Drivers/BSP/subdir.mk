@@ -5,13 +5,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Drivers/BSP/bsp_key.c 
+../Drivers/BSP/bsp_key.c \
+../Drivers/BSP/bsp_led.c 
 
 OBJS += \
-./Drivers/BSP/bsp_key.o 
+./Drivers/BSP/bsp_key.o \
+./Drivers/BSP/bsp_led.o 
 
 C_DEPS += \
-./Drivers/BSP/bsp_key.d 
+./Drivers/BSP/bsp_key.d \
+./Drivers/BSP/bsp_led.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +24,7 @@ Drivers/BSP/%.o Drivers/BSP/%.su Drivers/BSP/%.cyclo: ../Drivers/BSP/%.c Drivers
 clean: clean-Drivers-2f-BSP
 
 clean-Drivers-2f-BSP:
-	-$(RM) ./Drivers/BSP/bsp_key.cyclo ./Drivers/BSP/bsp_key.d ./Drivers/BSP/bsp_key.o ./Drivers/BSP/bsp_key.su
+	-$(RM) ./Drivers/BSP/bsp_key.cyclo ./Drivers/BSP/bsp_key.d ./Drivers/BSP/bsp_key.o ./Drivers/BSP/bsp_key.su ./Drivers/BSP/bsp_led.cyclo ./Drivers/BSP/bsp_led.d ./Drivers/BSP/bsp_led.o ./Drivers/BSP/bsp_led.su
 
 .PHONY: clean-Drivers-2f-BSP
 
