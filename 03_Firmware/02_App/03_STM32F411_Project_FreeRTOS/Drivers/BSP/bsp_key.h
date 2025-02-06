@@ -6,8 +6,11 @@
  * @file bsp_key.h
  *
  * @par dependencies
- * - stdio.h
  * - stdint.h
+ * - FreeRTOS.h
+ * - main.h
+ * - cmsis_os.h
+ * - queue.h
  *
  * @author Zienat
  *
@@ -37,6 +40,9 @@
 #define KEY_DEBOUNCE_DELAY  (pdMS_TO_TICKS(50))
 
 
+//******************************** Declaring ********************************//
+
+/* Function return enum */
 typedef enum
 {
   KEY_OK                  = 0,         /* Operation completed successfully.  */
@@ -49,17 +55,18 @@ typedef enum
   KEY_RESERVED            = 0x7FFFFFFF /* Reserved                           */
 } key_status_t;
 
+/* Key even enum */
 typedef enum
 {
 	KEY_PRESSED           = 0,
 	KEY_RELEASED          = 1,
 }key_event_t;
 
-
-//******************************** Declaring ********************************//
+/* Variables Declaring */
 extern TaskHandle_t    key_task_handle;
 extern QueueHandle_t   key_queue;
 
+/* Function Declaring */
 extern void            key_task_func(void * argument);
 extern key_event_t     key_scan(void);
 

@@ -2804,7 +2804,7 @@ Infinite_Loop:
 
 08001758 <key_task_func>:
  *
- * @return led_handler_status_t : Status of the function.
+ * @return None.
  *
  * */
 void key_task_func(void * argument)
@@ -2813,6 +2813,7 @@ void key_task_func(void * argument)
  800175a:	b084      	sub	sp, #16
  800175c:	af00      	add	r7, sp, #0
  800175e:	6078      	str	r0, [r7, #4]
+	//1. Create key_queue
 	key_event_t key_even = KEY_RELEASED;
  8001760:	2301      	movs	r3, #1
  8001762:	73fb      	strb	r3, [r7, #15]
@@ -2824,6 +2825,7 @@ void key_task_func(void * argument)
  800176e:	4603      	mov	r3, r0
  8001770:	4a19      	ldr	r2, [pc, #100]	@ (80017d8 <key_task_func+0x80>)
  8001772:	6013      	str	r3, [r2, #0]
+	//2. check whether the queue is created successfully
 	if(NULL == key_queue)
  8001774:	4b18      	ldr	r3, [pc, #96]	@ (80017d8 <key_task_func+0x80>)
  8001776:	681b      	ldr	r3, [r3, #0]
@@ -2843,10 +2845,12 @@ void key_task_func(void * argument)
 	}
 	while(1)
 	{
+		//3. Get key status
 		key_even = key_scan();
  800178a:	f000 f833 	bl	80017f4 <key_scan>
  800178e:	4603      	mov	r3, r0
  8001790:	73fb      	strb	r3, [r7, #15]
+		//4. Select whether to update the queue based on the key status
 		if(KEY_PRESSED == key_even)
  8001792:	7bfb      	ldrb	r3, [r7, #15]
  8001794:	2b00      	cmp	r3, #0
@@ -2903,7 +2907,7 @@ void key_task_func(void * argument)
 
 080017f4 <key_scan>:
  *
- * @return led_handler_status_t : Status of the function.
+ * @return key_event_t : Returns the key event, KEY_PRESSED or KEY_RELEASED.
  *
  * */
 key_event_t key_scan(void)
@@ -2911,13 +2915,14 @@ key_event_t key_scan(void)
  80017f4:	b580      	push	{r7, lr}
  80017f6:	b082      	sub	sp, #8
  80017f8:	af00      	add	r7, sp, #0
+	//1. Define variables
 	static BaseType_t   debouncing            = pdFALSE;
 	static TickType_t   debouncing_start_cnt  = 0;
 	TickType_t          now;
 	key_event_t         current_key_event     = KEY_RELEASED;
  80017fa:	2301      	movs	r3, #1
  80017fc:	71fb      	strb	r3, [r7, #7]
-
+	//2. Read the key status
 	if(GPIO_PIN_RESET == HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin))
  80017fe:	2101      	movs	r1, #1
  8001800:	4817      	ldr	r0, [pc, #92]	@ (8001860 <key_scan+0x6c>)
@@ -2926,6 +2931,7 @@ key_event_t key_scan(void)
  8001808:	2b00      	cmp	r3, #0
  800180a:	d11b      	bne.n	8001844 <key_scan+0x50>
 	{
+		//3. If the key is pressed, start debounce
 		if(!debouncing)
  800180c:	4b15      	ldr	r3, [pc, #84]	@ (8001864 <key_scan+0x70>)
  800180e:	681b      	ldr	r3, [r3, #0]
@@ -2945,6 +2951,7 @@ key_event_t key_scan(void)
 		}
 		else
 		{
+			//4. Debounce time is up, confirm the key is pressed
 			now = xTaskGetTickCount();
  8001826:	f002 ff65 	bl	80046f4 <xTaskGetTickCount>
  800182a:	6038      	str	r0, [r7, #0]
@@ -2964,11 +2971,11 @@ key_event_t key_scan(void)
  800183e:	2200      	movs	r2, #0
  8001840:	601a      	str	r2, [r3, #0]
  8001842:	e008      	b.n	8001856 <key_scan+0x62>
-			}
 		}
 	}
 	else
 	{
+		//5. If the key is released, end debounce
 		if(debouncing)
  8001844:	4b07      	ldr	r3, [pc, #28]	@ (8001864 <key_scan+0x70>)
  8001846:	681b      	ldr	r3, [r3, #0]
@@ -2984,10 +2991,6 @@ key_event_t key_scan(void)
  8001852:	2301      	movs	r3, #1
  8001854:	71fb      	strb	r3, [r7, #7]
 	}
-//	if(current_key_event != last_key_event)
-//	{
-//		last_key_event = current_key_event;
-//	}
 	return current_key_event;
  8001856:	79fb      	ldrb	r3, [r7, #7]
 }
@@ -3010,6 +3013,7 @@ void led_task_func(void * argument)
  800186e:	b084      	sub	sp, #16
  8001870:	af00      	add	r7, sp, #0
  8001872:	6078      	str	r0, [r7, #4]
+	//1. Create LED event queue
 	led_event_t led_event = LED_OFF;
  8001874:	2301      	movs	r3, #1
  8001876:	73fb      	strb	r3, [r7, #15]
@@ -3021,6 +3025,7 @@ void led_task_func(void * argument)
  8001882:	4603      	mov	r3, r0
  8001884:	4a10      	ldr	r2, [pc, #64]	@ (80018c8 <led_task_func+0x5c>)
  8001886:	6013      	str	r3, [r2, #0]
+	//2. Check if the queue is created successfully
 	if(NULL == led_queue)
  8001888:	4b0f      	ldr	r3, [pc, #60]	@ (80018c8 <led_task_func+0x5c>)
  800188a:	681b      	ldr	r3, [r3, #0]
@@ -3040,6 +3045,7 @@ void led_task_func(void * argument)
 	}
 	while(1)
 	{
+		//3. Receive LED event from the queue
 		if(pdPASS == xQueueReceive(led_queue, &led_event, 100))
  800189e:	4b0a      	ldr	r3, [pc, #40]	@ (80018c8 <led_task_func+0x5c>)
  80018a0:	681b      	ldr	r3, [r3, #0]
@@ -3051,6 +3057,7 @@ void led_task_func(void * argument)
  80018b0:	2b01      	cmp	r3, #1
  80018b2:	d1f4      	bne.n	800189e <led_task_func+0x32>
 		{
+			//4. Control the LED state according to the received event
 			led_control(led_event);
  80018b4:	7bfb      	ldrb	r3, [r7, #15]
  80018b6:	4618      	mov	r0, r3
@@ -3069,7 +3076,7 @@ void led_task_func(void * argument)
 
 080018d8 <led_control>:
  *
- * @return led_handler_status_t : Status of the function.
+ * @return None.
  *
  * */
 void led_control(led_event_t led_event)
@@ -3079,6 +3086,7 @@ void led_control(led_event_t led_event)
  80018dc:	af00      	add	r7, sp, #0
  80018de:	4603      	mov	r3, r0
  80018e0:	71fb      	strb	r3, [r7, #7]
+	//Execute the corresponding operation based on the incoming LED event
 	switch(led_event)
  80018e2:	79fb      	ldrb	r3, [r7, #7]
  80018e4:	2b02      	cmp	r3, #2

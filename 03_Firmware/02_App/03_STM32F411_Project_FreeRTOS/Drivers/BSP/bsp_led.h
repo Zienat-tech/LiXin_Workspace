@@ -6,8 +6,11 @@
  * @file bsp_led.h
  *
  * @par dependencies
- * - stdio.h
  * - stdint.h
+ * - FreeRTOS.h
+ * - main.h
+ * - cmsis_os.h
+ * - queue.h
  *
  * @author Zienat
  *
@@ -36,7 +39,9 @@
 //******************************** Defines **********************************//
 
 
+//******************************** Declaring ********************************//
 
+/* Function return enum */
 typedef enum
 {
   LED_OK                  = 0,         /* Operation completed successfully.  */
@@ -49,20 +54,20 @@ typedef enum
   LED_RESERVED            = 0x7FFFFFFF /* Reserved                           */
 } led_status_t;
 
+/* Led even enum */
 typedef enum
 {
-	LED_ON           = 0,
-	LED_OFF          = 1,
-	LED_TOGGLE       = 2
+	LED_ON                = 0,
+	LED_OFF               = 1,
+	LED_TOGGLE            = 2
 }led_event_t;
 
-
-//******************************** Declaring ********************************//
+/* Variables Declaring */
 extern TaskHandle_t    led_task_handle;
 extern QueueHandle_t   led_queue;
 
+/* Function Declaring */
 extern void            led_task_func(void * argument);
 extern void            led_control(led_event_t led_event);
-
 
 #endif /* End of __BSP_LED_H__ */

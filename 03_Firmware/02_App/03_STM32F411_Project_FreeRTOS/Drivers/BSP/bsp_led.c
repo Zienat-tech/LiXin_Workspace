@@ -6,8 +6,7 @@
  * @file bsp_led.c
  *
  * @par dependencies
- * - stdio.h
- * - stdint.h
+ * - bsp_led.h
  *
  * @author Zienat
  *
@@ -23,40 +22,38 @@
  *
  *****************************************************************************/
 //******************************** Includes *********************************//
-
 #include "bsp_led.h"
-
 
 //******************************** Defines **********************************//
 TaskHandle_t  led_task_handle;
 QueueHandle_t led_queue;
 
-
 //******************************** Declaring ********************************//
 
 
+//******************************** Function  ********************************//
+
 /**
- * @brief Instantiates the bsp_led_handler_t target.
+ * @brief This function is used to create an LED event queue and continuously
+ *        receive LED events from the queue to control the state of the LED.
  *
  * Steps:
- *  1. Adds Core interfaces into bsp_led_driver instance target.
- *  2. Adds OS interfaces into bsp_led_driver instance target.
- *  3. Adds timebase interfaces into bsp_led_driver instance target.
+ *  1. Create LED event queue.
+ *  2. Check if the queue is created successfully.
+ *  3. Receive LED event from the queue.
+ *  4. Control the LED state according to the received event.
  *
- * @param[in] self        : Pointer to the target of handler.
- * @param[in] os_delay    : Pointer to the os_delay_interface.
- * @param[in] os_queue    : Pointer to the os_queue_interface.
- * @param[in] os_critical : Pointer to the os_critical_interface.
- * @param[in] os_thread   : Pointer to the os_thread_interface.
- * @param[in] time_base   : Pointer to the time_base_interface.
+ * @param[in] argument: Not used.
  *
  * @return led_handler_status_t : Status of the function.
  *
  * */
 void led_task_func(void * argument)
 {
+	//1. Create LED event queue
 	led_event_t led_event = LED_OFF;
 	led_queue = xQueueCreate(5, sizeof(led_event_t));
+	//2. Check if the queue is created successfully
 	if(NULL == led_queue)
 	{
 		printf("led_queue create failure\r\n");
@@ -67,35 +64,31 @@ void led_task_func(void * argument)
 	}
 	while(1)
 	{
+		//3. Receive LED event from the queue
 		if(pdPASS == xQueueReceive(led_queue, &led_event, 100))
 		{
+			//4. Control the LED state according to the received event
 			led_control(led_event);
 			printf("led_event is [%d]\r\n", led_event);
 		}
 	}
-
 }
 
 /**
- * @brief Instantiates the bsp_led_handler_t target.
+ * @brief This function controls the on/off or toggle state of the LED
+ *        based on the incoming LED event parameter.
  *
  * Steps:
- *  1. Adds Core interfaces into bsp_led_driver instance target.
- *  2. Adds OS interfaces into bsp_led_driver instance target.
- *  3. Adds timebase interfaces into bsp_led_driver instance target.
+ *  1. Execute the corresponding operation based on the incoming LED event
  *
- * @param[in] self        : Pointer to the target of handler.
- * @param[in] os_delay    : Pointer to the os_delay_interface.
- * @param[in] os_queue    : Pointer to the os_queue_interface.
- * @param[in] os_critical : Pointer to the os_critical_interface.
- * @param[in] os_thread   : Pointer to the os_thread_interface.
- * @param[in] time_base   : Pointer to the time_base_interface.
+ * @param[in] led_event: The LED event to be executed, of type led_event_t.
  *
- * @return led_handler_status_t : Status of the function.
+ * @return None.
  *
  * */
 void led_control(led_event_t led_event)
 {
+	//Execute the corresponding operation based on the incoming LED event
 	switch(led_event)
 	{
 		case LED_ON:
@@ -111,11 +104,3 @@ void led_control(led_event_t led_event)
 			break;
 	}
 }
-
-
-
-
-
-
-
-
