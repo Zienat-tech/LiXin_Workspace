@@ -114,9 +114,9 @@ void MX_FREERTOS_Init(void) {
 //		xTaskCreate(vTaskReceiver, "Receiver", (128*4), NULL, (osPriorityNormal+1), NULL);
 //	}
   xTaskCreate( key_task_func, "key_task", (128*4), NULL,
-		      (osPriorityNormal+1), &key_task_handle );
-  xTaskCreate( led_task_func, "led_task", (128*4), NULL,
-  		      (osPriorityNormal+1), &led_task_handle );
+		      (osPriorityNormal), &key_task_handle );
+//  xTaskCreate( led_task_func, "led_task", (128*4), NULL,
+//  		      (osPriorityNormal+1), &led_task_handle );
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -136,29 +136,23 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
-	key_event_t key_value = KEY_RELEASED;
-	led_event_t led_value = LED_OFF;
+//	key_event_t key_value = KEY_RELEASED;
+//	led_event_t led_value = LED_OFF;
   for(;;)
   {
 	  if(key_queue != 0)
 	  {
-		  if(pdPASS == xQueueReceive(key_queue, &key_value, 100))
-		  {
-			  printf("Receive key_value = [%d]\r\n", key_value);
-
-			  led_value = LED_TOGGLE;
-			  if(pdPASS == xQueueSend(led_queue, &led_value, 0))
-			  {
-				  printf("Led send successfully\r\n");
-			  }
-		  }
+//		  if(pdPASS == xQueueReceive(key_queue, &key_value, 100))
+//		  {
+//			  printf("Receive key_value = [%d]\r\n", key_value);
+//
+//			  led_value = LED_TOGGLE;
+//			  if(pdPASS == xQueueSend(led_queue, &led_value, 0))
+//			  {
+//				  printf("Led send successfully\r\n");
+//			  }
+//		  }
 	  }
-
-//    osDelay(1);
-//	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-//	HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-//	  vTaskDelay(500);
-//	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 	  vTaskDelay(100);
   }
   /* USER CODE END StartDefaultTask */

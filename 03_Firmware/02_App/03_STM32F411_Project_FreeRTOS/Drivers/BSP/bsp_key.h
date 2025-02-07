@@ -37,8 +37,11 @@
 #include "queue.h"
 
 //******************************** Defines **********************************//
-#define KEY_DEBOUNCE_DELAY  (pdMS_TO_TICKS(50))
-
+//#define KEY_DEBOUNCE_DELAY     (pdMS_TO_TICKS(50))
+#define KEY_SHORT_PRESS_DELAY   (pdMS_TO_TICKS(50))
+#define KEY_DOUBLE_PRESS_DELAY  (pdMS_TO_TICKS(300))
+#define KEY_LONG_PRESS_DELAY    (pdMS_TO_TICKS(1000))
+#define GET_TICK_DIFF(old)      ((xTaskGetTickCount()) - (old))
 
 //******************************** Declaring ********************************//
 
@@ -58,9 +61,19 @@ typedef enum
 /* Key even enum */
 typedef enum
 {
-	KEY_PRESSED           = 0,
-	KEY_RELEASED          = 1,
+	KEY_RELEASE           = 0,
+	KEY_SHORT_PRESS       = 1,
+	KEY_DOUBLE_PRESS      = 2,
+	KEY_LONG_PRESS        = 3,
 }key_event_t;
+
+typedef enum
+{
+    KEY_RELEASING         = 0,
+	KEY_PRESSING          = 1,
+    KEY_WAIT_DOUBLE       = 2,
+    KEY_LONG_PRESSING     = 3
+}key_state_machine_t;
 
 /* Variables Declaring */
 extern TaskHandle_t    key_task_handle;

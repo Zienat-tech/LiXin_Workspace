@@ -99,6 +99,7 @@ void led_control(led_event_t led_event)
 			break;
 		case LED_TOGGLE:
 			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+			break;
 		default:
 //			HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 			break;
