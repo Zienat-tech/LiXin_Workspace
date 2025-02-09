@@ -51,7 +51,7 @@ QueueHandle_t led_queue;
 void led_task_func(void * argument)
 {
 	//1. Create LED event queue
-	led_event_t led_event = LED_OFF;
+	led_event_t led_event = LED_NONE;
 	led_queue = xQueueCreate(5, sizeof(led_event_t));
 	//2. Check if the queue is created successfully
 	if(NULL == led_queue)
@@ -65,23 +65,24 @@ void led_task_func(void * argument)
 	while(1)
 	{
 		//3. Receive LED event from the queue
-		if(pdPASS == xQueueReceive(led_queue, &led_event, 100))
+		if(pdPASS == xQueueReceive(led_queue, &led_event, portMAX_DELAY))
 		{
 			//4. Control the LED state according to the received event
-			led_control(led_event);
 			printf("led_event is [%d]\r\n", led_event);
+			led_control(led_event);
 		}
 	}
 }
 
 /**
- * @brief This function controls the on/off or toggle state of the LED
+ * @brief This function controls the on/off/toggle/blink state of the LED
  *        based on the incoming LED event parameter.
  *
  * Steps:
  *  1. Execute the corresponding operation based on the incoming LED event
  *
- * @param[in] led_event: The LED event to be executed, of type led_event_t.
+ * @param[in] led_event: The LED event to be executed:
+ * 					     LED_NONE, LED_ON ,LED_OFF, LED_BLINK3
  *
  * @return None.
  *
@@ -91,6 +92,8 @@ void led_control(led_event_t led_event)
 	//Execute the corresponding operation based on the incoming LED event
 	switch(led_event)
 	{
+		case LED_NONE:
+			break;
 		case LED_ON:
 			HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 			break;
@@ -100,8 +103,13 @@ void led_control(led_event_t led_event)
 		case LED_TOGGLE:
 			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 			break;
+		case LED_BLINK3:
+			for(uint8_t i = 0; i < 6; i++)
+			{
+				HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+				vTaskDelay(200);
+			}
 		default:
-//			HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 			break;
 	}
 }

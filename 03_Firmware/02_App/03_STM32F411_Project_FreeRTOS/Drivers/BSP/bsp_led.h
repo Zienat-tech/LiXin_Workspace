@@ -57,9 +57,11 @@ typedef enum
 /* Led even enum */
 typedef enum
 {
-	LED_ON                = 0,
-	LED_OFF               = 1,
-	LED_TOGGLE            = 2
+	LED_NONE              = 0,
+	LED_ON                = 1,
+	LED_OFF               = 2,
+	LED_TOGGLE            = 3,
+	LED_BLINK3            = 4
 }led_event_t;
 
 /* Variables Declaring */

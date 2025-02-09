@@ -1,2 +1,2 @@
 ../Drivers/BSP/bsp_key.c:50:6:key_task_func	24	static
-../Drivers/BSP/bsp_key.c:161:13:key_scan	24	static
+../Drivers/BSP/bsp_key.c:131:13:key_scan	24	static
