@@ -63,7 +63,9 @@ void Error_Handler(void);
 #define KEY_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+#define WORK_MODE     NORMAL_MODE
+#define NORMAL_MODE   0
+#define DEBUG_MODE    1
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

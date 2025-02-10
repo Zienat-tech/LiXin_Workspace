@@ -1,2 +1,4 @@
-../Drivers/BSP/bsp_key.c:50:6:key_task_func	8
-../Drivers/BSP/bsp_key.c:131:13:key_scan	18
+../Drivers/BSP/bsp_key.c:52:6:key_task_func	8
+../Drivers/BSP/bsp_key.c:135:13:key_scan	18
+../Drivers/BSP/bsp_key.c:262:6:HAL_GPIO_EXTI_Callback	3
+../Drivers/BSP/bsp_key.c:277:13:key_irq_event_detection	1

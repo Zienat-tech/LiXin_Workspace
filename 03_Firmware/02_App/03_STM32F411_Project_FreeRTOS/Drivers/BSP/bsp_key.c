@@ -25,8 +25,10 @@
 #include "bsp_key.h"
 
 //******************************** Defines **********************************//
-TaskHandle_t  key_task_handle;
-QueueHandle_t key_queue;
+TaskHandle_t      key_task_handle;
+QueueHandle_t     key_queue;
+key_irq_struct_t  key_irq_struct = {0};
+QueueHandle_t     key_irq_queue;
 
 //******************************** Declaring ********************************//
 
@@ -53,7 +55,8 @@ void key_task_func(void * argument)
 	static key_event_t key_event_last = KEY_RELEASE;
 
 	// 1. Create key_queue
-	key_queue = xQueueCreate(5, sizeof(key_event_t));
+	key_queue     = xQueueCreate(5, sizeof(key_event_t));
+	key_irq_queue = xQueueCreate(5, sizeof(key_irq_struct_t));
 
 	// 2. check whether the queue is created successfully
 	if(NULL == key_queue)
@@ -67,7 +70,8 @@ void key_task_func(void * argument)
 	while(1)
 	{
 		// 3. Get key status
-		key_even = key_scan();
+		//key_even = key_scan();
+
 
 		// 4. Check whether the key status changes
 		if(key_event_last != key_even)
@@ -254,3 +258,35 @@ key_event_t key_scan(void)
 	}
 	return key_event;
 }
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if(GPIO_PIN_RESET == HAL_GPIO_ReadPin(KEY_GPIO_Port, GPIO_Pin))
+	{
+		key_irq_struct.time           = xTaskGetTickCount();
+		key_irq_struct.key_edge_state = KEY_EDGE_FALLING;
+	}
+	else if(GPIO_PIN_SET == HAL_GPIO_ReadPin(KEY_GPIO_Port, GPIO_Pin))
+	{
+		key_irq_struct.time           = xTaskGetTickCount();
+		key_irq_struct.key_edge_state = KEY_EDGE_RISING;
+	}
+	xQueueSendFromISR(key_irq_queue, &key_irq_struct, NULL);
+}
+
+key_event_t key_irq_event_detection(void)
+{
+	key_event_t key_event = KEY_RELEASE;
+	xQueueReceive(key_irq_queue, &key_irq_struct, portMAX_DELAY);
+	if(KEY_EDGE_FALLING == key_irq_struct.key_edge_state)
+	{
+
+	}
+	else if(KEY_EDGE_RISING == key_irq_struct.key_edge_state)
+	{
+
+	}
+
+	return key_event;
+}
+

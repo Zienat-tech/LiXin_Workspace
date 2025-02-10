@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp_key.h"
+#include "bsp_led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,7 +113,10 @@ void MX_FREERTOS_Init(void) {
 //		//接收任务
 //		xTaskCreate(vTaskReceiver, "Receiver", (128*4), NULL, (osPriorityNormal+1), NULL);
 //	}
-  xTaskCreate(key_task_func, "key_task", (128*4), NULL, osPriorityNormal, &led_task_handle);
+  xTaskCreate( key_task_func, "key_task", (128*4), NULL,
+		      (osPriorityNormal+1), &key_task_handle );
+  xTaskCreate( led_task_func, "led_task", (128*4), NULL,
+  		      (osPriorityNormal-1), &led_task_handle );
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -132,16 +136,39 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
+	key_event_t key_value = KEY_RELEASE;
+	led_event_t led_value = LED_NONE;
   for(;;)
   {
-    osDelay(1);
-//	  uint16_t year = 2025;
-//	  uint8_t a = 5;
-//	  HAL_UART_Transmit(&huart1, &year, 1, 1000);
-//	  printf("Hello world 你好 %d \r\n", year);
-//	  printf("%d \r\n", a);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	  vTaskDelay(500);
+	  if(key_queue != 0)
+	  {
+		  if(pdPASS == xQueueReceive(key_queue, &key_value, portMAX_DELAY))
+		  {
+			  switch(key_value)
+			  {
+			  	  case KEY_RELEASE:
+			  		  led_value = LED_NONE;
+			  		  break;
+			  	  case KEY_SHORT_PRESS:
+			  		  led_value = LED_ON;
+			  		  break;
+			  	  case KEY_DOUBLE_PRESS:
+			  		  led_value = LED_TOGGLE;
+			  		  break;
+			  	  case KEY_LONG_PRESS:
+			  		  led_value = LED_BLINK3;
+			  		  break;
+			  	  default:
+			  		  break;
+			  }
+			  printf("key_value is [%d], now = [%ld]\r\n", key_value, xTaskGetTickCount());
+
+			  if(pdPASS == xQueueSend(led_queue, &led_value, 0))
+			  {
+				  printf("led_value send successfully\r\n");
+			  }
+		  }
+	  }
   }
   /* USER CODE END StartDefaultTask */
 }

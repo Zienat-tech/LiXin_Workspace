@@ -75,14 +75,28 @@ typedef enum
     KEY_LONG_PRESSING     = 3
 }key_state_machine_t;
 
+typedef enum
+{
+	KEY_EDGE_NONE         = 0,
+	KEY_EDGE_FALLING      = 1,
+	KEY_EDGE_RISING       = 2,
+}key_edge_state_t;
+
+typedef struct
+{
+	TickType_t            time;
+	key_edge_state_t      key_edge_state;
+}key_irq_struct_t;
+
 /* Variables Declaring */
-extern TaskHandle_t    key_task_handle;
-extern QueueHandle_t   key_queue;
+extern TaskHandle_t       key_task_handle;
+extern QueueHandle_t      key_queue;
+extern key_irq_struct_t   key_irq_struct;
 
 /* Function Declaring */
-extern void            key_task_func(void * argument);
-extern key_event_t     key_scan(void);
-
+extern void               key_task_func(void * argument);
+extern key_event_t        key_scan(void);
+extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
 
 
