@@ -61,8 +61,8 @@ all: main-build
 main-build: STM34F411_Start.elf secondary-outputs
 
 # Tool invocations
-STM34F411_Start.elf STM34F411_Start.map: $(OBJS) $(USER_OBJS) E:\UserLH\02_Project\STM34F411_Projects\01_Start\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STM34F411_Start.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\UserLH\02_Project\STM34F411_Projects\01_Start\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM34F411_Start.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STM34F411_Start.elf STM34F411_Start.map: $(OBJS) $(USER_OBJS) E:\UserLH\02_Project\LiXin_Workspace\03_Firmware\02_App\02_STM32F411_Projects\01_Start\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STM34F411_Start.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\UserLH\02_Project\LiXin_Workspace\03_Firmware\02_App\02_STM32F411_Projects\01_Start\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM34F411_Start.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

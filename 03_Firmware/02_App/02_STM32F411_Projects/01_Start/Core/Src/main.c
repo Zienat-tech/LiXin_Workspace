@@ -54,7 +54,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void function_A(void);
+void function_B(void);
 /* USER CODE END 0 */
 
 /**
@@ -87,9 +88,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+//  function_A();
   /* USER CODE END 2 */
-
+//  uint32_t c = 0x12345678;
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -121,6 +122,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//	  HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -171,6 +173,20 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+//void function_A(void)
+//{
+//	uint32_t a1 = 0x11111111;
+//	uint32_t a2 = 0x22222222;
+//	uint32_t a3 = 0x33333333;
+//	function_B();
+//}
+//void function_B(void)
+//{
+//	int8_t *ptr = ((int8_t*)0xFFFFFFFF);
+//	*ptr = 123;
+//	int8_t b = 3;
+//}
+
 
 /* USER CODE END 4 */
 
