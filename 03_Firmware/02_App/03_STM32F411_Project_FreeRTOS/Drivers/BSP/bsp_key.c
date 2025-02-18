@@ -216,7 +216,9 @@ static key_event_t key_irq_event_detection(void)
 
 		// 2.2.1.Check if the double-click detection time is met.
 		if(((current_time - first_press_time) <= KEY_DOUBLE_PRESS_DELAY) &&
-		                                         (key_event != KEY_LONG_PRESS))
+									   ( (key_event != KEY_LONG_PRESS)   ||
+										 (key_event != KEY_LONG_PRESS_3) ||
+									 	 (key_event != KEY_LONG_PRESS_5) ) )
 		{
 			press_count++;
 		}
@@ -250,9 +252,28 @@ static key_event_t key_irq_event_detection(void)
 		// 3.3.If the duration is greater than the long press delay time
 		if(press_duration > KEY_LONG_PRESS_DELAY)
 		{
-			key_event = KEY_LONG_PRESS;
-			printf("press_duration = %ld, key_event is [KEY_LONG_PRESS]\r\n",
-					                                         press_duration);
+			if(press_duration > KEY_LONG_PRESS_DELAY_5)
+			{
+				key_event = KEY_LONG_PRESS_5;
+				printf("press_duration = %ld, key_event is [KEY_LONG_PRESS_5]\r\n",
+																   press_duration);
+			}
+			else if(press_duration > KEY_LONG_PRESS_DELAY_3)
+			{
+				key_event = KEY_LONG_PRESS_3;
+				printf("press_duration = %ld, key_event is [KEY_LONG_PRESS_3]\r\n",
+												                   press_duration);
+			}
+			else
+			{
+				key_event = KEY_LONG_PRESS;
+				printf("press_duration = %ld, key_event is [KEY_LONG_PRESS]\r\n",
+								                                 press_duration);
+			}
+
+//			key_event = KEY_LONG_PRESS;
+//			printf("press_duration = %ld, key_event is [KEY_LONG_PRESS]\r\n",
+//					                                         press_duration);
 			press_count = 0;
 		}
 		// 3.4.If the number of key presses is greater than or equal to 2

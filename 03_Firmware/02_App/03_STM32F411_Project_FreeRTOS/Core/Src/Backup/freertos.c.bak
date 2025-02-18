@@ -169,6 +169,7 @@ void StartDefaultTask(void *argument)
 			  }
 		  }
 	  }
+	  osDelay(100);
   }
   /* USER CODE END StartDefaultTask */
 }
@@ -244,5 +245,6 @@ void StartDefaultTask(void *argument)
 //		//vTaskDelay(500);
 //	}
 //}
+
 /* USER CODE END Application */
 

@@ -61,7 +61,9 @@ typedef enum
 	LED_ON                = 1,
 	LED_OFF               = 2,
 	LED_TOGGLE            = 3,
-	LED_BLINK3            = 4
+	LED_BLINK_1           = 4,
+	LED_BLINK_3           = 5,
+	LED_BLINK_10          = 6
 }led_event_t;
 
 /* Variables Declaring */
@@ -71,5 +73,6 @@ extern QueueHandle_t   led_queue;
 /* Function Declaring */
 extern void            led_task_func(void * argument);
 extern void            led_control(led_event_t led_event);
+extern void            led_tim2_callback(void);
 
 #endif /* End of __BSP_LED_H__ */

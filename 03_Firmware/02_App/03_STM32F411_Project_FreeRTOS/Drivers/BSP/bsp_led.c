@@ -25,8 +25,9 @@
 #include "bsp_led.h"
 
 //******************************** Defines **********************************//
-TaskHandle_t  led_task_handle;
-QueueHandle_t led_queue;
+TaskHandle_t     led_task_handle;
+QueueHandle_t    led_queue;
+static uint8_t   g_led_blink_cnt = 0;
 
 //******************************** Declaring ********************************//
 
@@ -103,13 +104,45 @@ void led_control(led_event_t led_event)
 		case LED_TOGGLE:
 			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 			break;
-		case LED_BLINK3:
-			for(uint8_t i = 0; i < 6; i++)
-			{
-				HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-				vTaskDelay(200);
-			}
+//		case LED_BLINK_3:
+//			for(uint8_t i = 0; i < 6; i++)
+//			{
+//				HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+//				vTaskDelay(200);
+//			}
+			break;
+		case LED_BLINK_1:
+			g_led_blink_cnt = 2;
+			break;
+		case LED_BLINK_3:
+			g_led_blink_cnt = 6;
+			break;
+		case LED_BLINK_10:
+			g_led_blink_cnt = 20;
+			break;
 		default:
 			break;
+	}
+}
+
+/**
+ * @brief Timer 2 interrupt callback function for controlling LED blinking.
+ *
+ * Steps:
+ *  1. If the global variable g_led_blink_cnt is greater than 0, it calls the
+ *     led_control function to toggle the LED state and
+ *     decrements g_led_blink_cnt by 1.
+ *
+ * @param[in] None.
+ *
+ * @return None.
+ *
+ * */
+void led_tim2_callback(void)
+{
+	if(g_led_blink_cnt > 0)
+	{
+		led_control(LED_TOGGLE);
+		g_led_blink_cnt--;
 	}
 }
