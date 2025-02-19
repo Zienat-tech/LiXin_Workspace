@@ -425,6 +425,7 @@ void key_task_func(void * argument)
  * */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+//	HAL_GPIO_WritePin(IRQ_TRACE_GPIO_Port, IRQ_TRACE_Pin, GPIO_PIN_SET);
 	// 1.Declare a variable to indicate if a higher priority task
 	//   has been woken up.
 	BaseType_t    xHigherPriorityTaskWoken = pdFALSE;
@@ -442,6 +443,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			          &xHigherPriorityTaskWoken);
 	// 6.If a higher priority task has been woken up, perform a task switch
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	HAL_GPIO_WritePin(IRQ_TRACE_GPIO_Port, IRQ_TRACE_Pin, GPIO_PIN_RESET);
 }
 
 

@@ -156,8 +156,14 @@ void StartDefaultTask(void *argument)
 			  		  led_value = LED_TOGGLE;
 			  		  break;
 			  	  case KEY_LONG_PRESS:
-			  		  led_value = LED_BLINK3;
+			  		  led_value = LED_BLINK_1;
 			  		  break;
+			  	  case KEY_LONG_PRESS_3:
+					  led_value = LED_BLINK_3;
+					  break;
+			  	  case KEY_LONG_PRESS_5:
+					  led_value = LED_BLINK_10;
+					  break;
 			  	  default:
 			  		  break;
 			  }
@@ -169,7 +175,7 @@ void StartDefaultTask(void *argument)
 			  }
 		  }
 	  }
-	  osDelay(100);
+//	  osDelay(100);
   }
   /* USER CODE END StartDefaultTask */
 }
