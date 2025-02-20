@@ -114,9 +114,16 @@ int __io_putchar(int ch)
 {
 	//vTaskSuspendAll();
 	//这种方法输出正常
+#if (LOG_OUTPUT_MODE == LOG_RTT_MODE)
 	SEGGER_RTT_PutChar(0, ch);
-//	while ((USART1->SR & 0X40) == 0);
-//	USART1->DR = (uint8_t)ch;
+
+#elif (LOG_OUTPUT_MODE == LOG_UART_MODE)
+	while ((USART1->SR & 0X40) == 0);
+	USART1->DR = (uint8_t)ch;
+
+#else
+    #error "Invalid log output mode"
+#endif
 	//这种方法会输出乱码
 //	HAL_UART_Transmit(&huart1, (uint8_t *)ch, 1, HAL_MAX_DELAY);
 	//xTaskResumeAll();

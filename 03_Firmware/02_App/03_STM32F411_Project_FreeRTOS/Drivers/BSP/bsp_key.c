@@ -52,7 +52,7 @@ QueueHandle_t     key_irq_queue;
  *                       KEY_DOUBLE_PRESS | KEY_LONG_PRESS.
  *
  * */
-#if (KEY_DETECTION_TYPE == KEY_POLLING_TYPE)
+#if (KEY_DETECTION_MODE == KEY_POLLING_MODE)
 static key_event_t key_scan(void)
 {
 	/* Variables */
@@ -198,7 +198,7 @@ static key_event_t key_scan(void)
  *                       					 KEY_DOUBLE_PRESS | KEY_LONG_PRESS.
  *
  * */
-#if (KEY_DETECTION_TYPE == KEY_INTERRUPT_TYPE)
+#if (KEY_DETECTION_MODE == KEY_IRQ_MODE)
 static key_event_t key_irq_event_detection(void)
 {
 	// 1.Record the time of the first press, the start time of the key press,
@@ -321,12 +321,19 @@ void key_task_func(void * argument)
 
 	// 1. Create key_queue
 	key_queue     = xQueueCreate(10, sizeof(key_event_t));
+
+#if (KEY_DETECTION_MODE == KEY_IRQ_MODE)
 	key_irq_queue = xQueueCreate(10, sizeof(uint32_t));
+#endif
 
 	// 2. check whether the queue is created successfully
-	if(NULL == key_queue)
+	if((key_irq_queue != NULL) && (key_queue != NULL))
 	{
-		printf("key_queue or key_irq_queue create failure\r\n");
+		printf("key_queue and key_irq_queue create successfully\r\n");
+	}
+	else if(key_queue != NULL)
+	{
+		printf("key_queue create successfully\r\n");
 	}
 	else
 	{
@@ -334,7 +341,7 @@ void key_task_func(void * argument)
 	}
 	while(1)
 	{
-#if (KEY_DETECTION_TYPE == KEY_POLLING_TYPE)
+#if (KEY_DETECTION_MODE == KEY_POLLING_MODE)
 	// 3. Get key status
 	key_even = key_scan();
 	// 4. Check whether the key status changes
@@ -377,7 +384,7 @@ void key_task_func(void * argument)
 	}
 #endif
 
-#if (KEY_DETECTION_TYPE == KEY_INTERRUPT_TYPE)
+#if (KEY_DETECTION_MODE == KEY_IRQ_MODE)
 	// 3.Receive key interrupt data from the key_irq_queue
 	if(pdPASS == xQueueReceive(key_irq_queue, &px_key_irq_data, portMAX_DELAY))
 	{
@@ -444,7 +451,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			          &xHigherPriorityTaskWoken);
 	// 6.If a higher priority task has been woken up, perform a task switch
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
+#if INTERRUPT_DELAY_CAPTURE
 	HAL_GPIO_WritePin(IRQ_TRACE_GPIO_Port, IRQ_TRACE_Pin, GPIO_PIN_RESET);
+#endif
 }
 
 

@@ -113,10 +113,10 @@ void MX_FREERTOS_Init(void) {
 //		//接收任务
 //		xTaskCreate(vTaskReceiver, "Receiver", (128*4), NULL, (osPriorityNormal+1), NULL);
 //	}
-//  xTaskCreate( key_task_func, "key_task", (128*4), NULL,
-//		      (osPriorityNormal+1), &key_task_handle );
-//  xTaskCreate( led_task_func, "led_task", (128*4), NULL,
-//  		      (osPriorityNormal-1), &led_task_handle );
+  xTaskCreate( key_task_func, "key_task", (128*4), NULL,
+		      (osPriorityNormal+1), &key_task_handle );
+  xTaskCreate( led_task_func, "led_task", (128*4), NULL,
+  		      (osPriorityNormal-1), &led_task_handle );
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -136,49 +136,49 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
-//	key_event_t key_value = KEY_RELEASE;
-//	led_event_t led_value = LED_NONE;
+	key_event_t key_value = KEY_RELEASE;
+	led_event_t led_value = LED_NONE;
   for(;;)
   {
-//	  if(key_queue != 0)
-//	  {
-//		  if(pdPASS == xQueueReceive(key_queue, &key_value, portMAX_DELAY))
-//		  {
-//			  switch(key_value)
-//			  {
-//			  	  case KEY_RELEASE:
-//			  		  led_value = LED_NONE;
-//			  		  break;
-//			  	  case KEY_SHORT_PRESS:
-//			  		  led_value = LED_ON;
-//			  		  break;
-//			  	  case KEY_DOUBLE_PRESS:
-//			  		  led_value = LED_TOGGLE;
-//			  		  break;
-//			  	  case KEY_LONG_PRESS:
-//			  		  led_value = LED_BLINK_1;
-//			  		  break;
-//			  	  case KEY_LONG_PRESS_3:
-//					  led_value = LED_BLINK_3;
-//					  break;
-//			  	  case KEY_LONG_PRESS_5:
-//					  led_value = LED_BLINK_10;
-//					  break;
-//			  	  default:
-//			  		  break;
-//			  }
-//			  printf("key_value is [%d], now = [%ld]\r\n", key_value, xTaskGetTickCount());
-//
-//			  if(pdPASS == xQueueSend(led_queue, &led_value, 0))
-//			  {
-//				  printf("led_value send successfully\r\n");
-//			  }
-//		  }
-//	  }
+	  if(key_queue != 0)
+	  {
+		  if(pdPASS == xQueueReceive(key_queue, &key_value, portMAX_DELAY))
+		  {
+			  switch(key_value)
+			  {
+			  	  case KEY_RELEASE:
+			  		  led_value = LED_NONE;
+			  		  break;
+			  	  case KEY_SHORT_PRESS:
+			  		  led_value = LED_ON;
+			  		  break;
+			  	  case KEY_DOUBLE_PRESS:
+			  		  led_value = LED_TOGGLE;
+			  		  break;
+			  	  case KEY_LONG_PRESS:
+			  		  led_value = LED_BLINK_1;
+			  		  break;
+			  	  case KEY_LONG_PRESS_3:
+					  led_value = LED_BLINK_3;
+					  break;
+			  	  case KEY_LONG_PRESS_5:
+					  led_value = LED_BLINK_10;
+					  break;
+			  	  default:
+			  		  break;
+			  }
+			  printf("key_value is [%d], now = [%ld]\r\n", key_value, xTaskGetTickCount());
 
-	  printf("Hello SEGGER_RTT, @ %ld\r\n", xTaskGetTickCount());
-	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	  osDelay(1000);
+			  if(pdPASS == xQueueSend(led_queue, &led_value, 0))
+			  {
+				  printf("led_value send successfully\r\n");
+			  }
+		  }
+	  }
+
+//	  printf("Hello SEGGER_RTT, @ %ld\r\n", xTaskGetTickCount());
+//	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+//	  osDelay(1000);
   }
   /* USER CODE END StartDefaultTask */
 }

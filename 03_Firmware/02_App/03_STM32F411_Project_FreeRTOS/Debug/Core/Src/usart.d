@@ -42,7 +42,7 @@ Core/Src/usart.o: ../Core/Src/usart.c ../Core/Inc/usart.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
- ../Middlewares/SEGGER_RTT/SEGGER_RTT.h \
+ ../Core/Inc/private_cfg.h ../Middlewares/SEGGER_RTT/SEGGER_RTT.h \
  ../Middlewares/SEGGER_RTT/SEGGER_RTT_Conf.h
 ../Core/Inc/usart.h:
 ../Core/Inc/main.h:
@@ -89,5 +89,6 @@ Core/Src/usart.o: ../Core/Src/usart.c ../Core/Inc/usart.h \
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
+../Core/Inc/private_cfg.h:
 ../Middlewares/SEGGER_RTT/SEGGER_RTT.h:
 ../Middlewares/SEGGER_RTT/SEGGER_RTT_Conf.h:

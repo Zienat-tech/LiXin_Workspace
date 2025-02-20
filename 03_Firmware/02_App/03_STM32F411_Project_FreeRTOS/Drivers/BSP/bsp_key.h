@@ -37,17 +37,13 @@
 #include "queue.h"
 
 //******************************** Defines **********************************//
-#define KEY_DETECTION_TYPE           KEY_INTERRUPT_TYPE
-#define KEY_POLLING_TYPE             0
-#define KEY_INTERRUPT_TYPE           1
-
 #define KEY_DEBOUNCE_DELAY          (pdMS_TO_TICKS(10))
 #define KEY_SHORT_PRESS_DELAY       (pdMS_TO_TICKS(50))
 #define KEY_DOUBLE_PRESS_DELAY      (pdMS_TO_TICKS(300))
 #define KEY_LONG_PRESS_DELAY        (pdMS_TO_TICKS(1000))
 #define KEY_LONG_PRESS_DELAY_3      (pdMS_TO_TICKS(3000))
 #define KEY_LONG_PRESS_DELAY_5      (pdMS_TO_TICKS(5000))
-#define GET_TICK_DIFF(old)         ((xTaskGetTickCount()) - (old))
+#define GET_TICK_DIFF(old)          ((xTaskGetTickCount()) - (old))
 
 //******************************** Declaring ********************************//
 
