@@ -114,8 +114,9 @@ int __io_putchar(int ch)
 {
 	//vTaskSuspendAll();
 	//这种方法输出正常
-	while ((USART1->SR & 0X40) == 0);
-	USART1->DR = (uint8_t)ch;
+	SEGGER_RTT_PutChar(0, ch);
+//	while ((USART1->SR & 0X40) == 0);
+//	USART1->DR = (uint8_t)ch;
 	//这种方法会输出乱码
 //	HAL_UART_Transmit(&huart1, (uint8_t *)ch, 1, HAL_MAX_DELAY);
 	//xTaskResumeAll();

@@ -30,6 +30,7 @@ extern "C" {
 
 /* USER CODE BEGIN Includes */
 #include "cmsis_os.h"
+#include "SEGGER_RTT.h"
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart1;
