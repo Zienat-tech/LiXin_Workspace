@@ -27,7 +27,8 @@
 //******************************** Defines **********************************//
 TaskHandle_t      key_task_handle;
 QueueHandle_t     key_queue;
-key_irq_struct_t  key_irq_data = {0};
+key_irq_struct_t  key_irq_data    = {0};
+key_irq_struct_t *px_key_irq_data = &key_irq_data;
 QueueHandle_t     key_irq_queue;
 
 //******************************** Declaring ********************************//
@@ -208,10 +209,10 @@ static key_event_t key_irq_event_detection(void)
 	static key_event_t key_event        = KEY_RELEASE;
 
 	// 2.If the key triggers a falling edge interrupt
-	if(key_irq_data.key_edge_state == KEY_EDGE_FALLING)
+	if(px_key_irq_data->key_edge_state == KEY_EDGE_FALLING)
 	{
 		// 2.1 Get the press time and key_event change to KEY_DETECTION
-		TickType_t current_time = key_irq_data.time;
+		TickType_t current_time = px_key_irq_data->time;
 		key_event = KEY_DETECTION;
 
 		// 2.2.1.Check if the double-click detection time is met.
@@ -235,11 +236,11 @@ static key_event_t key_irq_event_detection(void)
 	}
 	// 3.If the key triggers a rising edge interrupt and
 	//   the key event is KEY_DETECTION
-	else if((key_irq_data.key_edge_state == KEY_EDGE_RISING) &&
+	else if((px_key_irq_data->key_edge_state == KEY_EDGE_RISING) &&
 	                                              (key_event == KEY_DETECTION))
 	{
 		// 3.1.Calculate the duration of the key press
-		TickType_t press_duration = key_irq_data.time - press_start_time;
+		TickType_t press_duration = px_key_irq_data->time - press_start_time;
 
 		// 3.2.If the duration is less than the debounce delay time
 		if(press_duration < KEY_DEBOUNCE_DELAY)
@@ -288,12 +289,12 @@ static key_event_t key_irq_event_detection(void)
 		else
 		{
 			key_event = KEY_SHORT_PRESS;
-			first_press_time = key_irq_data.time;
+			first_press_time = px_key_irq_data->time;
 			printf("press_duration = %ld, key_event is [KEY_SHORT_PRESS]\r\n",
 											                  press_duration);
 		}
 
-		printf("rising time is [%ld]\r\n", key_irq_data.time);
+		printf("rising time is [%ld]\r\n", px_key_irq_data->time);
 	}
 	return key_event;
 }
@@ -320,7 +321,7 @@ void key_task_func(void * argument)
 
 	// 1. Create key_queue
 	key_queue     = xQueueCreate(10, sizeof(key_event_t));
-	key_irq_queue = xQueueCreate(10, sizeof(key_irq_struct_t));
+	key_irq_queue = xQueueCreate(10, sizeof(uint32_t));
 
 	// 2. check whether the queue is created successfully
 	if(NULL == key_queue)
@@ -378,7 +379,7 @@ void key_task_func(void * argument)
 
 #if (KEY_DETECTION_TYPE == KEY_INTERRUPT_TYPE)
 	// 3.Receive key interrupt data from the key_irq_queue
-	if(pdPASS == xQueueReceive(key_irq_queue, &key_irq_data, portMAX_DELAY))
+	if(pdPASS == xQueueReceive(key_irq_queue, &px_key_irq_data, portMAX_DELAY))
 	{
 		printf("key_irq_queue receive successfully.\r\n");
 	}
@@ -433,13 +434,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	GPIO_PinState pin_state = HAL_GPIO_ReadPin(KEY_GPIO_Port, GPIO_Pin);
 	// 3.Determine if it's a rising or falling edge interrupt
 	//   based on the pin state
-	key_irq_data.key_edge_state = ( (pin_state == GPIO_PIN_RESET) ?
+	px_key_irq_data->key_edge_state = ( (pin_state == GPIO_PIN_RESET) ?
 									   KEY_EDGE_FALLING : KEY_EDGE_RISING);
 	// 4.Get the current system tick count to record the time of the interrupt
-	key_irq_data.time = xTaskGetTickCountFromISR();
+	px_key_irq_data->time = xTaskGetTickCountFromISR();
 	// 5.Send the interrupt data to the queue for other tasks to handle
 	xQueueSendFromISR(             key_irq_queue,
-					               &key_irq_data,
+					               &px_key_irq_data,
 			          &xHigherPriorityTaskWoken);
 	// 6.If a higher priority task has been woken up, perform a task switch
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
