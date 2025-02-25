@@ -4,7 +4,8 @@
 #ifndef LOG_OUTPUT_MODE
 	#define LOG_UART_MODE              0
 	#define LOG_RTT_MODE               1
-	#define LOG_OUTPUT_MODE            LOG_RTT_MODE
+	#define LOG_ELOG_MODE              2
+	#define LOG_OUTPUT_MODE            LOG_ELOG_MODE
 #endif
 
 #ifndef INTERRUPT_DELAY_CAPTURE

@@ -94,6 +94,11 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
+
+#if (LOG_OUTPUT_MODE == LOG_ELOG_MODE)
+  bsp_elog_init();
+#endif
+
   /* USER CODE END 2 */
 
   /* Init scheduler */

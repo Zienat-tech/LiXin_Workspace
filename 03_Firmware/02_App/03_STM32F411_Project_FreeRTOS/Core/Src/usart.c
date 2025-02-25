@@ -120,6 +120,7 @@ int __io_putchar(int ch)
 #elif (LOG_OUTPUT_MODE == LOG_UART_MODE)
 	while ((USART1->SR & 0X40) == 0);
 	USART1->DR = (uint8_t)ch;
+#elif (LOG_OUTPUT_MODE == LOG_ELOG_MODE)
 
 #else
     #error "Invalid log output mode"

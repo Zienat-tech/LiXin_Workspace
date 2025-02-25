@@ -1,0 +1,8 @@
+../Middlewares/easylogger/elog_port.c:40:13:elog_port_init	1
+../Middlewares/easylogger/elog_port.c:52:6:elog_port_deinit	1
+../Middlewares/easylogger/elog_port.c:64:6:elog_port_output	1
+../Middlewares/easylogger/elog_port.c:73:6:elog_port_output_lock	1
+../Middlewares/easylogger/elog_port.c:82:6:elog_port_output_unlock	1
+../Middlewares/easylogger/elog_port.c:93:13:elog_port_get_time	1
+../Middlewares/easylogger/elog_port.c:107:13:elog_port_get_p_info	1
+../Middlewares/easylogger/elog_port.c:118:13:elog_port_get_t_info	1

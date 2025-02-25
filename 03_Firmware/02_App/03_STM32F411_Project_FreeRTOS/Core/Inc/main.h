@@ -32,6 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "bsp_elog.h"
 #include "bsp_led.h"
 #include "private_cfg.h"
 /* USER CODE END Includes */
